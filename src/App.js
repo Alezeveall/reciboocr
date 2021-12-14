@@ -1,21 +1,21 @@
 import logo from './logo.svg';
 import './App.css';
+import Stepper from './Components/Stepper';
 
 function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
         <p>
-          Edit <code>src/App.js</code> and save to reload.
+          Análise de Recibo para Reembolso Corporativo
         </p>
         <a
           className="App-link"
-          href="https://reactjs.org"
+          href="https://lucid.app/lucidchart/983b2229-d367-4caa-8351-f2c3409adc43/edit?from_docslist=true&page=0_0#"
           target="_blank"
-          rel="noopener noreferrer"
+          rel="Mais detalhes clique aqui..."
         >
-          Learn React
+          Mais detalhes clique aqui ...
         </a>
       </header>
     </div>
