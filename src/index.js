@@ -10,9 +10,7 @@ import App  from './App';
 ReactDOM.render(
   <StyledEngineProvider injectFirst>
     <App />
-
     <Stepper />   
-    
   </StyledEngineProvider>,
   document.querySelector("#root")
 );
