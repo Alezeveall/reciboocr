@@ -7,6 +7,8 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import ImgUpload from '../ImgUpload/index.jsx';
 import Receipt from '../Receipt/index.jsx'
+import Tesseract from '../Tesseract/ndex';
+
 const steps = ['Upload do Recibo', 'Pré-Validação', 'Processamento', 'Resultado'];
 
 export default function HorizontalLinearStepper() {
@@ -89,7 +91,7 @@ export default function HorizontalLinearStepper() {
       ) : (
         <React.Fragment>
           <Typography sx={{ mt: 2, mb: 1 }}>Passo: {activeStep + 1}</Typography>
-          {activeStep === 0 && <ImgUpload />}
+          {activeStep === 0 && <Tesseract />}
           {activeStep === 3 && <Receipt />}
           <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
             <Button
