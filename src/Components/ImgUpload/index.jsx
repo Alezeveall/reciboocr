@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState, useCallback, createRef } from "react";
 import PropTypes from "prop-types";
 import Img from "../../assets/images/no-image-found-360x250.png";
 import { AddPhotoAlternate } from "@material-ui/icons";
@@ -6,6 +6,9 @@ import { Fab } from "@material-ui/core";
 import Label from "../Label/index.jsx";
 import { useStyles } from "./styles";
 import clsx from "clsx";
+import axios from 'axios'
+import { Header, Grid, Button, Icon, Message, Loader } from 'semantic-ui-react'
+
 // import { width } from "dom-helpers";
 
 /**

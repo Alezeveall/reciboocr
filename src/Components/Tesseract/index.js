@@ -57,16 +57,13 @@ function App() {
 
   return (
     <>
-      
+
       <Grid divided>
-        <Grid.Column style={{width:"15%"}} key={0}>
+        <Grid.Column style={{width:"50%"}} key={0}>
           <center>
-            <Webcam
-              audio={false}
-              ref={webcamRef}
-              screenshotFormat="image/jpeg"
-            />
+            
             <Grid.Column>
+              
               <Button size='big' onClick={capture} 
               style={{margin:20}} icon labelPosition='left' inverted color='green'>
                 <Icon name='camera' />
@@ -84,15 +81,16 @@ function App() {
                   />
                 </form>
               </Button>
+
             </Grid.Column>
           </center>
         </Grid.Column>
         
-        <Grid.Column style={{width:"10%"}} key={1}>
+        <Grid.Column style={{width:"50%"}} key={1}>
           {
             load
             ?
-            <Loader style={{marginTop: 120}} active inline='centered' size='big'>Loading...</Loader>
+            <Loader style={{marginTop: 120}} active inline='centered' size='big'>Executando Pré-Processamento...</Loader>
             :
             (
               imgSrc 
@@ -112,7 +110,7 @@ function App() {
               </>
               :
               <Header style={{margin:10, fontFamily:'roboto'}} size='large'>
-                No data preview
+                Sem Leitura de Dadis
               </Header>
             )
           }

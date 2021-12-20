@@ -11,7 +11,7 @@ function App() {
           className="App-link"
           href="https://lucid.app/lucidchart/983b2229-d367-4caa-8351-f2c3409adc43/edit?from_docslist=true&page=0_0#"
           target="_blank"
-          rel="Mais detalhes clique aqui..."
+          rel="Mais detalhes clique ..."
         >
           Mais detalhes clique aqui ...
         </a>
