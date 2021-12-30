@@ -1,121 +1,90 @@
 import React, { useRef, useState, useCallback, createRef } from 'react';
 import './index.css';
-import Webcam from "react-webcam";
-import axios from 'axios'
-import { Header, Grid, Button, Icon, Message, Loader } from 'semantic-ui-react'
+import Webcam from 'react-webcam';
+import axios from 'axios';
+import { Header, Grid, Button, Icon, Message, Loader } from 'semantic-ui-react';
 
-function App() {
-
-  const webcamRef = useRef(null);
-  const [imgSrc, setImgSrc] = useState(null);
-  const [textOcr, setTextOcr] = useState(null);
+function App({ imgDefault, imgData, disableButton }) {
+  const [message, setMessage] = useState('carregando...');
+  // const webcamRef = useRef(null);
+  // const [imgSrc, setImgSrc] = useState(null);
+  // const [textOcr, setTextOcr] = useState(null);
   const [load, setLoad] = useState(false);
   let fileInputRef = createRef();
 
-  const capture = useCallback(() => {
-    setLoad(true)
-    const imageSrc = webcamRef.current.getScreenshot();
-    // console.log(imageSrc)  
-    let url = 'http://localhost:5000/capture'
-    let config = {
-      headers: {'Content-Type': 'application/json'} // x-www-form-urlencoded
+  React.useEffect(() => {
+    upload(imgData);
+  });
+
+  React.useEffect(() => {
+    if (message) {
+      const findNumberIndex = message.search('/000');
+      if (findNumberIndex > 0) {
+        let findedCnpj = message.substring(
+          findNumberIndex - 15,
+          findNumberIndex + 10
+        );
+        findedCnpj = findedCnpj.replace(/[^0-9]/g, '');
+
+        findedCnpj = findedCnpj.replace(
+          /^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/,
+          '$1.$2.$3/$4-$5'
+        );
+        if (findedCnpj.length === 18) {
+          setMessage(`CNPJ encontrado: ${findedCnpj}`);
+          disableButton(false);
+        } else {
+          setMessage('CNPJ não encontrado');
+          disableButton();
+        }
+      } else {
+        setMessage('CNPJ não encontrado');
+        disableButton();
+      }
     }
-    let dataBody = {
-      img: imageSrc
-    }
-    axios.post(url, dataBody, config)
-    .then((res) => {
-        console.log(res.data)
-        setTextOcr(res.data.text)
-        setImgSrc(imageSrc);
-        setLoad(false)
-    })
-    .catch((err) => {
-      console.log(err)
-    })
-    
-  }, [webcamRef, setImgSrc]
-  );
+  }, [message]);
 
   const upload = (file) => {
-    setLoad(true)
-    var url = 'http://localhost:5000/upload'
-    var formData = new FormData()
-    formData.append('file', file)
+    // setLoad(true);
+    var url = 'http://localhost:5000/upload';
+    var formData = new FormData();
+    formData.append('file', file);
     var config = {
-      headers:
-      {'Content-Type': 'multipart/form-data'}
-    }
-    return axios.post(url, formData, config)
-    .then((res)=>{
-      console.log(res.data)
-      setTextOcr(res.data.text)
-      setImgSrc(res.data.image);
-      setLoad(false)
-    })
-  }
+      headers: { 'Content-Type': 'multipart/form-data' },
+    };
+    return axios
+      .post(url, formData, config)
+      .then((res) => {
+        console.log(res.data);
+        setMessage(res.data?.text);
+        // setTextOcr(res.data.text);
+        // setImgSrc(res.data.image);
+        // setLoad(false);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   return (
     <>
-
-      <Grid divided>
-        <Grid.Column style={{width:"50%"}} key={0}>
-          <center>
-            
-            <Grid.Column>
-              
-              <Button size='big' onClick={capture} 
-              style={{margin:20}} icon labelPosition='left' inverted color='green'>
-                <Icon name='camera' />
-                Capturar
-              </Button>
-              
-              <Button size='big' onClick={() => fileInputRef.current.click()} 
-              style={{margin:20}} icon labelPosition='left' inverted color='blue'>
-                <Icon name='upload' />
-                Upload
-                <form encType="multipart/form-data">
-                  <input ref={fileInputRef} type='file' hidden name='filename'
-                  onChange={(x)=>{upload(x.target.files[0])}}
-                  accept="image/*"
-                  />
-                </form>
-              </Button>
-
-            </Grid.Column>
-          </center>
-        </Grid.Column>
-        
-        <Grid.Column style={{width:"50%"}} key={1}>
-          {
-            load
-            ?
-            <Loader style={{marginTop: 120}} active inline='centered' size='big'>Executando Pré-Processamento...</Loader>
-            :
-            (
-              imgSrc 
-              ?
-              <>
-                <Header style={{margin:10, fontFamily:'roboto'}} size='large'>
-                  Resultado
-                </Header>
-                <img style= {{marginLeft:10, height:'50%'}} alt="captured" src={imgSrc}/>
-                <Message
-                  size='massive'
-                  color='orange'
-                  header={textOcr}
-                  content=""
-                  style={{margin:15}}
-                />
-              </>
-              :
-              <Header style={{margin:10, fontFamily:'roboto'}} size='large'>
-                Sem Leitura de Dadis
-              </Header>
-            )
-          }
-        </Grid.Column>
-      </Grid>
+      <img
+        id="imgTesseract"
+        style={{ marginLeft: 10, height: '50%' }}
+        alt="captured"
+        src={imgDefault}
+        className="img"
+      />
+      <form encType="multipart/form-data">
+        <input
+          type="file"
+          hidden
+          id="imgTesseractFile"
+          name="imgTesseractFileName"
+          accept="image/*"
+        />
+      </form>
+      <span>{message}</span>
     </>
   );
 }

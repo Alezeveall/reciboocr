@@ -1,13 +1,13 @@
-import React, { useRef, useState, useCallback, createRef } from "react";
-import PropTypes from "prop-types";
-import Img from "../../assets/images/no-image-found-360x250.png";
-import { AddPhotoAlternate } from "@material-ui/icons";
-import { Fab } from "@material-ui/core";
-import Label from "../Label/index.jsx";
-import { useStyles } from "./styles";
-import clsx from "clsx";
-import axios from 'axios'
-import { Header, Grid, Button, Icon, Message, Loader } from 'semantic-ui-react'
+import React, { useRef, useState, useCallback, createRef } from 'react';
+import PropTypes from 'prop-types';
+import Img from '../../assets/images/no-image-found-360x250.png';
+import { AddPhotoAlternate } from '@material-ui/icons';
+import { Fab } from '@material-ui/core';
+import Label from '../Label/index.jsx';
+import { useStyles } from './styles';
+import clsx from 'clsx';
+import axios from 'axios';
+import { Header, Grid, Button, Icon, Message, Loader } from 'semantic-ui-react';
 
 // import { width } from "dom-helpers";
 
@@ -19,11 +19,13 @@ import { Header, Grid, Button, Icon, Message, Loader } from 'semantic-ui-react'
 const ImgUpload = ({
   name,
   category,
-  formik,
   base64 = null,
   showButton = true,
-  status = "",
+  status = '',
   showDivOpacity = false,
+  getImg,
+  getImgFile,
+  getImgForm,
 }) => {
   const classes = useStyles();
   const [show, setShow] = useState(showDivOpacity);
@@ -32,30 +34,41 @@ const ImgUpload = ({
       (document.getElementById(`${name}/img`).src = window.URL.createObjectURL(
         event.currentTarget.files[0]
       ));
-    event.currentTarget.files[0].category = category;
-    // comentado, verificar qual o problema
-    //formik.setFieldValue(`${name}`, event.currentTarget.files[0]);
+    getImgFile(event.currentTarget.files[0]);
+    let formData = new FormData();
+    formData.append('file', event.currentTarget.files[0]);
+    getImgForm(formData);
+    const getBase64 = (file) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = function () {
+        getImg(reader.result);
+      };
+      reader.onerror = function (error) {
+        console.log('Error: ', error);
+      };
+    };
+    getBase64(event.currentTarget.files[0]);
     setShow(false);
   };
 
-  let labelStatus = "";
+  let labelStatus = '';
 
   const objStatus = {
-    reprovado: "disapproved",
-    aprovado: "approved",
-    aguarandoaprovacao: "waitApproved",
+    reprovado: 'disapproved',
+    aprovado: 'approved',
+    aguarandoaprovacao: 'waitApproved',
   };
 
   if (status === null) {
-    status = "";
-  } else if (status === "Aguardando Aprovação") {
-    status = "aguarandoAprovacao";
-    labelStatus = "Aguardando Aprovação";
+    status = '';
+  } else if (status === 'Aguardando Aprovação') {
+    status = 'aguarandoAprovacao';
+    labelStatus = 'Aguardando Aprovação';
   } else {
     labelStatus = status;
   }
 
-  // console.log(width("body"));
   return (
     <div className={classes.container}>
       {show && (
@@ -95,12 +108,6 @@ const ImgUpload = ({
       </div>
     </div>
   );
-};
-
-ImgUpload.propTypes = {
-  name: PropTypes.string.isRequired,
-  category: PropTypes.string.isRequired,
-  formik: PropTypes.object.isRequired,
 };
 
 export default ImgUpload;
