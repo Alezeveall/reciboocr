@@ -50,7 +50,7 @@ export default class App extends Component {
 
     let formData = new FormData();
     formData.append('file', e.target.files[0], this.state.img);
-    let url = 'http://localhost:3005/api/analyze/';
+    let url = 'http://18.231.114.40:3005/api/analyze/';
     axios
       .post(url, formData, {
         headers: {
@@ -118,7 +118,7 @@ export default class App extends Component {
     );
     let formData = new FormData();
     formData.append('file', dataFile, this.state.img);
-    let url = 'http://localhost:3005/api/analyze/';
+    let url = 'http://18.231.114.40:3005/api/analyze/';
 
     axios
       .post(url, formData, {
@@ -153,8 +153,8 @@ export default class App extends Component {
       <div className="page">
         <Card className="card">
           <CardHeader
-            title="Azure Custom Form Analyzer Example"
-            subheader="Using NodeJS Backend and React"
+            title="Recibo para Reembolso"
+            subheader="Detalhando informações"
           ></CardHeader>
           <CardContent>
             <Grid container spacing={3}>
@@ -211,11 +211,11 @@ function TransactionForm(props) {
 
   return (
     <form className={classes.root} noValidate autoComplete="off">
-      <label>Transaction Form</label>
+      <label>Recibo</label>
       <br></br>
       <TextField
         id="name"
-        label="Name"
+        label="Empresa"
         size="small"
         value={props.name}
         variant="outlined"
@@ -223,7 +223,7 @@ function TransactionForm(props) {
       />
       <TextField
         id="accountNo"
-        label="Account Number"
+        label="Endereço"
         value={props.accNo}
         size="small"
         variant="outlined"
@@ -231,7 +231,7 @@ function TransactionForm(props) {
       />
       <TextField
         id="date"
-        label="Date"
+        label="Data da Despesa"
         value={props.date}
         size="small"
         variant="outlined"
@@ -239,7 +239,7 @@ function TransactionForm(props) {
       />
       <TextField
         id="amount"
-        label="Amount"
+        label="Valor da Despesa"
         value={props.amount}
         size="small"
         variant="outlined"
@@ -255,7 +255,7 @@ function Alerts(props) {
   if (props.notify === true) {
     return (
       <Alert id="alertt" variant="filled" severity="success">
-        Form Analysing Successfully Completed !
+        Análise de Recibo realizada com sucesso !
       </Alert>
     );
   }

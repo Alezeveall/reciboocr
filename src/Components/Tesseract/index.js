@@ -30,6 +30,7 @@ function App({ imgDefault, imgData, disableButton }) {
           /^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/,
           '$1.$2.$3/$4-$5'
         );
+
         if (findedCnpj.length === 18) {
           setMessage(`CNPJ encontrado: ${findedCnpj}`);
           disableButton(false);
@@ -46,7 +47,7 @@ function App({ imgDefault, imgData, disableButton }) {
 
   const upload = (file) => {
     // setLoad(true);
-    var url = 'http://localhost:5000/upload';
+    var url = 'http://18.231.114.40:5000/upload';
     var formData = new FormData();
     formData.append('file', file);
     var config = {
