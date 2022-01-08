@@ -1,13 +1,17 @@
-import { Button, Card, CardContent, CardHeader, Grid } from '@material-ui/core';
+import {
+  Card,
+  CardContent,
+  Backdrop,
+  CircularProgress,
+  Grid,
+} from '@material-ui/core';
 import Alert from '@material-ui/lab/Alert';
 import React, { Component } from 'react';
-import './index.css';
+// import './index.css';
 import mainImg from '../../assets/images/no-image-found-360x250.png';
 import axios from 'axios';
-import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
-import SaveIcon from '@material-ui/icons/Save';
 import urltoFile from '../../helpers/converUrlToFile';
 
 const useStyles = makeStyles((theme) => ({
@@ -28,6 +32,7 @@ export default class App extends Component {
     amount: '',
     name: '',
     accNo: '',
+    open: false,
   };
 
   imageHandler = (e) => {
@@ -99,7 +104,10 @@ export default class App extends Component {
     if (typeof items === 'object') {
       if (items.length > 0) {
         for (const item in items) {
-          newItem.push(items[item]?.value?.Name?.value);
+          newItem.push({
+            item: items[item]?.value?.Name?.value,
+            price: items[item]?.value?.Price.value,
+          });
         }
         console.log(newItem);
         this.props.listFill(newItem);
@@ -109,6 +117,7 @@ export default class App extends Component {
 
   async componentDidMount() {
     //  const teste = (async () => {
+    this.setState({ ...this.state, open: true });
     this.props.disableButton(true);
 
     const dataFile = await urltoFile(
@@ -127,74 +136,82 @@ export default class App extends Component {
         },
       })
       .then((res) => {
+        console.log(res);
+        console.log(res.data.output[0].fields.MerchantName.value);
         this.setState({ analyzing: false });
         console.log(res);
         let rec = res.data.output[0].fields;
         this.findItem(rec);
+        console.log(rec.Total?.valueData?.text);
         this.setState({
           //** date: rec.date.value + "/" + rec.month.value + "/" + rec.year.value,
           //** amount: rec.Amount.value,
           //** name: rec.Name.value,
           //** accNo: rec.AccountNo.value,
           //** notify: true,
-          name: rec.MerchantName.value,
-          date: rec.TransactionTime.value,
-          amount: rec.Total.value,
-          accNo: rec.MerchantAddress.value,
+          name: rec.MerchantName?.value || 'Não encontrado',
+          date: rec?.TransactionDate?.valueData?.text || 'Não encontrado',
+          amount: rec.Total?.valueData?.text || '0',
+          accNo: rec.MerchantAddress?.value || 'Não encontrado',
           notify: true,
+          open: false,
         });
+        console.log(this.state);
         this.props.disableButton(false);
+      })
+      .catch((error) => {
+        console.log(error);
+        this.setState({ ...this.state, open: false });
       });
   }
 
   render() {
-    const { img, analyzing, name, accNo, date, amount, notify } = this.state;
+    const { analyzing, name, accNo, date, amount, notify } = this.state;
+    console.log(this.state.name);
     return (
-      <div className="page">
-        <Card className="card">
-          <CardHeader
-            title="Recibo para Reembolso"
-            subheader="Detalhando informações"
-          ></CardHeader>
-          <CardContent>
-            <Grid container spacing={3}>
-              <Grid item xs={12} md={6}>
-                {/* <Button
-                  variant="contained"
-                  color="default"
-                  startIcon={<CloudUploadIcon />}
-                  component="label"
-                >
-                  Upload File
-                  <input
-                    type="file"
-                    name="image-upload"
-                    id="input"
-                    onChange={this.imageHandler}
-                    hidden
-                  />
-                </Button>
-                <br /> */}
-                <TransactionForm
-                  accNo={accNo}
-                  amount={amount}
-                  date={date}
-                  name={name}
-                />
+      <>
+        <Grid container spacing={3} justifyContent="center">
+          <Card>
+            <CardContent>
+              <Grid item>
+                <Grid container spacing={3}>
+                  <Grid item>
+                    <TransactionForm
+                      accNo={accNo}
+                      amount={`R$: ${amount}`}
+                      date={date}
+                      name={name}
+                    />
+                  </Grid>
+                  <Grid item>
+                    <Grid
+                      container
+                      direction="column"
+                      justifyContent="center"
+                      spacing={2}
+                    >
+                      <Grid item>
+                        <Scanning analyzing={analyzing} />
+                        <img
+                          style={{ height: '200px' }}
+                          alt="Form"
+                          src={this.props.imgDefault}
+                        />
+                        <Alerts notify={notify} />
+                      </Grid>
+                      {this.state.open && (
+                        <Grid item>
+                          <CircularProgress sx={{ color: '#1976D2' }} />
+                        </Grid>
+                      )}
+                    </Grid>
+                  </Grid>
+                </Grid>
               </Grid>
-              <Grid item xs={12} md={6}>
-                <Scanning analyzing={analyzing} />
-                <img
-                  className="imgMain"
-                  alt="Form"
-                  src={this.props.imgDefault}
-                />
-                <Alerts notify={notify} />
-              </Grid>
-            </Grid>
-          </CardContent>
-        </Card>
-      </div>
+            </CardContent>
+          </Card>
+        </Grid>
+      </>
     );
   }
 }
@@ -210,48 +227,59 @@ function TransactionForm(props) {
   const classes = useStyles();
 
   return (
-    <form className={classes.root} noValidate autoComplete="off">
-      <label>Recibo</label>
-      <br></br>
-      <TextField
-        id="name"
-        label="Empresa"
-        size="small"
-        value={props.name}
-        variant="outlined"
-        color="secondary"
-      />
-      <TextField
-        id="accountNo"
-        label="Endereço"
-        value={props.accNo}
-        size="small"
-        variant="outlined"
-        color="secondary"
-      />
-      <TextField
-        id="date"
-        label="Data da Despesa"
-        value={props.date}
-        size="small"
-        variant="outlined"
-        color="secondary"
-      />
-      <TextField
-        id="amount"
-        label="Valor da Despesa"
-        value={props.amount}
-        size="small"
-        variant="outlined"
-        color="secondary"
-      />
-    </form>
+    <>
+      <form className={classes.root} noValidate autoComplete="off">
+        <Grid container direction="row" spacing={3}>
+          <Grid item>
+            <label>Recibo</label>
+          </Grid>
+          <Grid item>
+            <TextField
+              id="name"
+              label="Empresa"
+              size="small"
+              value={props.name}
+              variant="outlined"
+              color="secondary"
+            />
+          </Grid>
+          <Grid item>
+            <TextField
+              id="accountNo"
+              label="Endereço"
+              value={props.accNo}
+              size="small"
+              variant="outlined"
+              color="secondary"
+            />
+          </Grid>
+          <Grid item>
+            <TextField
+              id="date"
+              label="Data da Despesa"
+              value={props.date}
+              size="small"
+              variant="outlined"
+              color="secondary"
+            />
+          </Grid>
+          <Grid item>
+            <TextField
+              id="amount"
+              label="Valor da Despesa"
+              value={props.amount}
+              size="small"
+              variant="outlined"
+              color="secondary"
+            />
+          </Grid>
+        </Grid>
+      </form>
+    </>
   );
 }
 
 function Alerts(props) {
-  const classes = useStyles();
-
   if (props.notify === true) {
     return (
       <Alert id="alertt" variant="filled" severity="success">

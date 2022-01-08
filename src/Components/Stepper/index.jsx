@@ -5,7 +5,13 @@ import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import { List, ListItem, ListItemText, Divider } from '@mui/material';
+import {
+  List,
+  ListItem,
+  ListItemText,
+  Divider,
+  ListItemSecondaryAction,
+} from '@mui/material';
 import ImgUpload from '../ImgUpload/index.jsx';
 import Receipt from '../Receipt/index.js';
 import Tesseract from '../Tesseract/index.js';
@@ -63,6 +69,7 @@ export default function HorizontalLinearStepper() {
     bgcolor: 'background.paper',
     border: '0.1px solid #E0E0E0',
     borderRadius: '7px',
+    marginTop: '10px',
   };
 
   const handleNext = () => {
@@ -99,6 +106,10 @@ export default function HorizontalLinearStepper() {
     setActiveStep(0);
   };
 
+  const formatter = new Intl.NumberFormat([], {
+    style: 'currency',
+    currency: 'BRL',
+  });
   return (
     <Box sx={{ width: '100%' }}>
       <Stepper activeStep={activeStep}>
@@ -158,18 +169,25 @@ export default function HorizontalLinearStepper() {
             />
           )}
           {activeStep === 3 && (
-            <List sx={style} component="nav">
-              {list.map((listItem, index) => {
-                return (
-                  <>
-                    <ListItem>
-                      <ListItemText primary={listItem} />
-                    </ListItem>
-                    {list.length - 1 !== index && <Divider />}
-                  </>
-                );
-              })}
-            </List>
+            <>
+              <br />
+              <Typography variant="h5">Detalhes das despesas</Typography>
+              <List sx={style} component="nav">
+                {list.map(({ item, price }, index) => {
+                  return (
+                    <div key={item}>
+                      <ListItem>
+                        <ListItemText primary={item} />
+                        <ListItemSecondaryAction>
+                          {formatter.format(price)}
+                        </ListItemSecondaryAction>
+                      </ListItem>
+                      {list.length - 1 !== index && <Divider />}
+                    </div>
+                  );
+                })}
+              </List>
+            </>
           )}
 
           <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
