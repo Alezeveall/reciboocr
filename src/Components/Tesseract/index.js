@@ -45,7 +45,7 @@ function App({ imgDefault, imgData, disableButton }) {
           '$1.$2.$3/$4-$5'
         );
         if (findedCnpj.length === 18) {
-          setMessage(`CNPJ encontrado: ${findedCnpj}`);
+          setMessage(`Empresa identificada CNPJ: ${findedCnpj}`);
           disableButton(false);
         } else {
           setMessage('CNPJ não encontrado1');
@@ -53,9 +53,8 @@ function App({ imgDefault, imgData, disableButton }) {
           disableButton();
         }
       } else if (message.search('CNPJ encontrado:') === -1) {
-        setMessage('CNPJ não encontrado');
-        setLoading(false);
-        disableButton();
+        setMessage('Atenção: Não foi possível identificar a Empresa, o processamento pode apresentar problemas!');
+        disableButton(false);
       }
     }
   }, [message]);

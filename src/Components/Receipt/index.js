@@ -1,7 +1,6 @@
 import {
   Card,
   CardContent,
-  Backdrop,
   CircularProgress,
   Grid,
 } from '@material-ui/core';
