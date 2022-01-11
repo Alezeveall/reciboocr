@@ -7,7 +7,7 @@ function App() {
         <p>Análise de Recibo para Reembolso Corporativo</p>
         <a
           className="App-link"
-          href="https://lucid.app/lucidchart/983b2229-d367-4caa-8351-f2c3409adc43/edit?from_docslist=true&page=0_0#"
+          href="https://alezeve-files.s3.us-west-2.amazonaws.com/Grupo+D+-+Identificação+de+Recibo+para+Reembolso+Corporativo+(1).pdf"
           target="_blank"
           rel="Mais detalhes clique ... noreferrer"
         >
