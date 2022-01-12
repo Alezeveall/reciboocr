@@ -61,7 +61,7 @@ function App({ imgDefault, imgData, disableButton }) {
 
   const upload = async (file) => {
     try {
-      let url = 'https://18.231.114.40:5000/upload';
+      let url = 'http://18.231.114.40:5000/upload';
       let formData = new FormData();
       formData.append('file', file);
       let config = {
