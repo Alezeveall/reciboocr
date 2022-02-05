@@ -4,7 +4,7 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <p>Análise de Recibo para Reembolso Corporativo</p>
+        <p>Análise de Recibo para Reembolso Corporativo - Design By Alezeve</p>
         <a
           className="App-link"
           href="https://alezeve-files.s3.us-west-2.amazonaws.com/Grupo+D+-+Identificação+de+Recibo+para+Reembolso+Corporativo+(1).pdf"
